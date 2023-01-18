@@ -14,113 +14,70 @@ code:
 PRIMS ALGORITHM:
 
 #include<stdio.h>
-#define humans 5
-#define INF 99999;
-int G[humans][humans] = {{0,4,2,0,0},{0,0,3,2,3},{0,1,0,4,5},{0,0,0,0,0},{0,0,0,-5,0}};
+#include<limits.h>
+void swap(int*x,int*y){
+    int temp=*x;
+    *x=*y;
+    *y=temp;
+}
 
-int main() {
-  int human_no=0;  
-  int zombies[humans]={0};
-  zombies[0] = 1;
-  int row;  
-  int col;  
-  printf("Humans : steps\n");
-
-  while (human_no < humans - 1) 
-  {
-    int min = INF;
-    row = 0;
-    col = 0;
-
-    for (int i = 0; i < humans; i++) 
-    {
-      if (zombies[i]) 
-      {
-        for (int j = 0; j < humans; j++) 
-        {
-          if (zombies[j]!=0 && G[i][j]>-INF) 
-          {  
-            if (min > G[i][j]) 
-            {
-              min = G[i][j];
-              row = i;
-              col = j;
+void bubbleSort(int arr[],int src[],int dst[], int n){
+    int i, j;
+    for (i = 0; i < n - 1; i++){
+        for (j = 0; j < n - i - 1; j++){
+            if (arr[j] > arr[j + 1]){
+                swap(&arr[j], &arr[j + 1]);
+                swap(&src[j], &src[j + 1]);
+                swap(&dst[j], &dst[j + 1]);
             }
-          }
         }
-      }
-    }
-    printf("%d - %d : %d\n", row, col, G[row][col]);
-    zombies[col] = 1;
-    human_no++;
-  }
-  return 0;
 }
-KRUSKAL's ALGORITHM:
+}
+int findabsroot(int v,int parent[]){
+    if(parent[v]==-1)
+		return v;
+	return findabsroot(parent[v],parent);
+}
+void union1(int from,int to,int parent[]){
+	from = findabsroot(from,parent);
+	to= findabsroot(to,parent);
+	parent[from]=to;
+}
+ int main(){
+  
+ 
+  int n;
+  printf("enter no of vertices: ");
+  scanf("%d",&n);
 
-#include<stdio.h>
-#include<stdlib.h>
-int i,j,k,a,b,u,v,n,ne=1;
-int min,mincost=0,cost[9][9],parent[9];
-int find(int);
-int uni(int,int);
-void main()
-{
-	
-	printf("\n\tImplementation of Kruskal's algorithm\n");
-	printf("\nEnter the no. of vertices:");
-	scanf("%d",&n);
-	printf("\nEnter the cost adjacency matrix:\n");
-	for(i=1;i<=n;i++)
-	{
-		for(j=1;j<=n;j++)
-		{
-			scanf("%d",&cost[i][j]);
-			if(cost[i][j]==0)
-				cost[i][j]=999;
-		}
-	}
-	printf("The edges of Minimum Cost Spanning Tree are\n");
-	while(ne < n)
-	{
-		for(i=1,min=999;i<=n;i++)
-		{
-			for(j=1;j <= n;j++)
-			{
-				if(cost[i][j] < min)
-				{
-					min=cost[i][j];
-					a=u=i;
-					b=v=j;
-				}
-			}
-		}
-		u=find(u);
-		v=find(v);
-		if(uni(u,v))
-		{
-			printf("%d edge (%d,%d) =%d\n",ne++,a,b,min);
-			mincost +=min;
-		}
-		cost[a][b]=cost[b][a]=999;
-	}
-	printf("\n\tMinimum cost = %d\n",mincost);
+  int edges;
+  int smst[n],dmst[n],parent[n];
+  printf("enter no of edges: ");
+  scanf("%d",&edges);
+
+  for(int i=0;i<edges;i++){
+       parent[i]=-1;
+  }
+ int src[7]={0,0,1,1,1,2,2,2,4};
+ int dst[7]={1,2,2,3,4,1,3,4,3};
+ int cost[7]={4,2,3,2,3,1,4,5,-5};
+ 
+  bubbleSort(cost,src,dst,edges);
+  for(int i=0;i<n-1;i++){
+      int a=findabsroot(src[i],parent);
+      int b=findabsroot(dst[i],parent);
+      if(a!=b){
+          smst[i]=src[i];
+          dmst[i]=dst[i];
+          union1(src[i],dst[i],parent);
+      }
+  }
+  for(int i=0;i<n-1;i++){
+    printf("%d --> %d ",smst[i],dmst[i]);
+    printf("\n");
 }
-int find(int i)
-{
-	while(parent[i])
-	i=parent[i];
-	return i;
-}
-int uni(int i,int j)
-{
-	if(i!=j)
-	{
-		parent[j]=i;
-		return 1;
-	}
-	return 0;
-}
+  return 0;
+ }
 
 DIJKSTRA's ALGORITHM does not usually work for negative weights because by definition its supposed to find the most optimal path.It does not reconsider a node once it marks it as visited even if a shorter path exists than the previous one.
 Because of the presence of the negative weight.
