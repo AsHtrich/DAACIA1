@@ -122,5 +122,5 @@ int uni(int i,int j)
 	return 0;
 }
 
-DIJKSTRA's ALGORITHM does not work for negative weights because by definition its supposed to find the most optimal path.It does not reconsider a node once it marks it as visited even if a shorter path exists than the previous one.
-This example cannot be worked with this algorithm just because of the presence of the negative weight.
+DIJKSTRA's ALGORITHM does not usually work for negative weights because by definition its supposed to find the most optimal path.It does not reconsider a node once it marks it as visited even if a shorter path exists than the previous one.
+Because of the presence of the negative weight.
